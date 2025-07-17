@@ -32,14 +32,7 @@ import { FeatureImportanceChart } from '@/components/feature-importance-chart';
 import { RiskScoreCard } from '@/components/risk-score-card';
 import { UserInformationCard } from '@/components/user-information-card';
 import { FraudRulesCard } from '@/components/fraud-rules-card';
-
-const CorrelationHeatmap = dynamic(
-  () => import('@/components/correlation-heatmap').then((mod) => mod.CorrelationHeatmap),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="h-[300px] w-full" />,
-  }
-);
+import { CorrelationHeatmap } from '@/components/correlation-heatmap';
 
 
 const initialPatterns: TransactionPattern[] = [

@@ -2,7 +2,6 @@
 "use client";
 
 import * as React from 'react';
-import Heatmap from 'react-heatmap-grid';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from './ui/skeleton';
 
@@ -13,17 +12,9 @@ type CorrelationHeatmapProps = {
 };
 
 export function CorrelationHeatmap({ data, labels, isLoading }: CorrelationHeatmapProps) {
-  const cellStyle = (background: string, value: number, min: number, max: number, data: any, x: number, y: number) => ({
-    background: `rgba(63, 143, 255, ${1 - (max - value) / (max - min)})`,
-    fontSize: '11px',
-    color: '#fff',
-    border: '1px solid #eee',
-    borderRadius: '4px',
-    margin: '1px',
-  });
-
-  const cellRender = (value: number) => {
-    return value ? <div className="text-xs">{value}</div> : null;
+  const getColor = (value: number) => {
+    const alpha = Math.max(0, Math.min(1, value));
+    return `rgba(97, 175, 239, ${alpha})`; // --primary blue with varying opacity
   };
 
   return (
@@ -38,17 +29,39 @@ export function CorrelationHeatmap({ data, labels, isLoading }: CorrelationHeatm
         {isLoading ? (
           <Skeleton className="h-[250px] w-full" />
         ) : (
-          <div className="text-xs text-muted-foreground overflow-x-auto">
-            <Heatmap
-              xLabels={labels}
-              yLabels={labels}
-              data={data}
-              xLabelWidth={40}
-              yLabelWidth={40}
-              cellStyle={cellStyle}
-              cellRender={cellRender}
-              height={30}
-            />
+          <div className="flex items-center text-xs text-muted-foreground">
+            <div className="flex flex-col-reverse">
+              {labels.map((label) => (
+                <div key={label} className="flex h-8 items-center justify-end pr-2 font-mono text-xs">
+                  {label}
+                </div>
+              ))}
+            </div>
+            <div className="flex-1">
+              {data.map((row, y) => (
+                <div key={`row-${y}`} className="flex">
+                  {row.map((value, x) => (
+                    <div
+                      key={`cell-${y}-${x}`}
+                      className="flex h-8 w-full items-center justify-center rounded-sm border border-transparent"
+                      style={{ backgroundColor: getColor(value) }}
+                      title={`${labels[y]} / ${labels[x]}: ${value.toFixed(2)}`}
+                    >
+                      <span className="text-white mix-blend-difference">
+                        {value.toFixed(1)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+               <div className="flex pt-1">
+                {labels.map((label) => (
+                  <div key={label} className="flex w-full items-center justify-center font-mono text-xs">
+                    {label}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </CardContent>
