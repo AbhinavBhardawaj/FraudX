@@ -293,7 +293,7 @@ export default function DashboardPage() {
               <CardHeader>
                 <CardTitle>Flagged Transactions</CardTitle>
                 <CardDescription>Processing data...</CardDescription>
-              </Header>
+              </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <Skeleton className="h-[250px] w-full" />
