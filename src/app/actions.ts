@@ -16,9 +16,13 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
     // =================================================================
     // START: DJANGO ML Model Integration
     // =================================================================
-    const YOUR_DJANGO_ENDPOINT = 'https://fraud-backend.onrender.com/api/predict/';
+    const djangoEndpoint = process.env.NEXT_PUBLIC_DJANGO_API_ENDPOINT;
 
-    const response = await fetch(YOUR_DJANGO_ENDPOINT, {
+    if (!djangoEndpoint) {
+      throw new Error("The Django API endpoint is not configured. Please set NEXT_PUBLIC_DJANGO_API_ENDPOINT in your environment variables.");
+    }
+
+    const response = await fetch(djangoEndpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
