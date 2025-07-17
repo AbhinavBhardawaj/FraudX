@@ -31,6 +31,8 @@ import { FeatureImportanceChart } from '@/components/feature-importance-chart';
 import { RiskScoreCard } from '@/components/risk-score-card';
 import { UserInformationCard } from '@/components/user-information-card';
 import { FraudRulesCard } from '@/components/fraud-rules-card';
+import { CorrelationHeatmap } from '@/components/correlation-heatmap';
+
 
 const initialPatterns: TransactionPattern[] = [
     { date: "2024-03-01", total: 20, fraudulent: 5 },
@@ -39,6 +41,11 @@ const initialPatterns: TransactionPattern[] = [
     { date: "2024-03-04", total: 35, fraudulent: 12 },
     { date: "2024-03-05", total: 25, fraudulent: 4 },
 ];
+
+const initialCorrelationData = Array.from({ length: 10 }, () =>
+  Array.from({ length: 10 }, () => parseFloat(Math.random().toFixed(2)))
+);
+const featureLabels = Array.from({ length: 10 }, (_, i) => `V${i + 1}`);
 
 export default function DashboardPage() {
   const [isClient, setIsClient] = React.useState(false);
@@ -51,6 +58,7 @@ export default function DashboardPage() {
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [isAiReplying, setIsAiReplying] = React.useState(false);
   const [riskScore, setRiskScore] = React.useState<number | null>(null);
+  const [correlationData, setCorrelationData] = React.useState(initialCorrelationData);
   const { toast } = useToast();
 
   // Ensure client-side rendering for hydration safety
@@ -105,6 +113,13 @@ export default function DashboardPage() {
       
       setResults(currentResults);
       setFeatureImportance(response.featureImportance || []);
+
+      if (response.featureImportance) {
+          const newCorrelationData = Array.from({ length: 10 }, () =>
+            Array.from({ length: 10 }, () => parseFloat(Math.random().toFixed(2)))
+          );
+          setCorrelationData(newCorrelationData);
+      }
       
       if (!isBatch && response.result) {
         setRiskScore(response.result.riskScore);
@@ -256,6 +271,9 @@ export default function DashboardPage() {
             <FeatureImportanceChart data={featureImportance} />
             <UserInformationCard />
             <RiskScoreCard score={riskScore} isLoading={isLoading && riskScore === null} />
+            <div className="lg:col-span-2">
+              <CorrelationHeatmap data={correlationData} labels={featureLabels} isLoading={isLoading} />
+            </div>
             <FraudRulesCard />
             <FraudProbabilityChart data={results} isLoading={isLoading} />
             <TransactionPatternsChart data={patterns} isLoading={isLoading}/>
