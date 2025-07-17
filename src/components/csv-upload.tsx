@@ -1,10 +1,10 @@
-
 "use client";
 
 import * as React from 'react';
-import { Upload, Loader2, FileCheck2 } from 'lucide-react';
+import { Upload, Loader2, FileCheck2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
 type CsvUploadProps = {
   onSubmit: (file: File) => void;
@@ -30,6 +30,12 @@ export function CsvUpload({ onSubmit, isLoading }: CsvUploadProps) {
 
   return (
     <div className="space-y-2">
+      <div className="flex items-center justify-between">
+          <Link href="/sample-transactions.csv" className="flex items-center text-xs text-muted-foreground hover:text-primary" download>
+              <Download className="mr-1 h-3 w-3" />
+              Download Sample CSV
+          </Link>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           type="file"
