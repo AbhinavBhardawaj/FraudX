@@ -41,6 +41,7 @@ const CorrelationHeatmap = dynamic(
   }
 );
 
+
 const initialPatterns: TransactionPattern[] = [
     { date: "2024-03-01", total: 20, fraudulent: 5 },
     { date: "2024-03-02", total: 30, fraudulent: 8 },
