@@ -40,10 +40,12 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
     const modelPrediction = await response.json();
     console.log("Received from backend:", modelPrediction); // Debugging log
 
-    const riskScoreValue = modelPrediction.risk_score;
-    if (riskScoreValue === undefined) {
-        throw new Error("The backend response did not include a 'risk_score' field.");
+    // Robustly find the risk score key
+    const riskScoreKey = Object.keys(modelPrediction).find(key => key.toLowerCase().includes('score'));
+    if (!riskScoreKey) {
+        throw new Error("The backend response did not include a 'risk_score' or similar field.");
     }
+    const riskScoreValue = modelPrediction[riskScoreKey];
 
     const result: PredictionResult = {
       id: `txn_${Math.random().toString(36).substr(2, 9)}`,
