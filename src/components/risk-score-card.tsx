@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -17,11 +16,9 @@ type RiskScoreCardProps = {
 };
 
 export function RiskScoreCard({ score, isLoading }: RiskScoreCardProps) {
-  console.log("Score prop received in RiskScoreCard:", score);
   const percentageScore = score !== null ? score * 100 : 0;
-  const displayScore = score !== null ? percentageScore.toFixed(2) : '0';
+  const displayScore = percentageScore.toFixed(2);
   const sliderValue = Math.round(percentageScore);
-
 
   return (
     <Card>

@@ -1,4 +1,3 @@
-
 "use server";
 
 import type { PredictionResult, FeatureImportance, Transaction } from "@/lib/definitions";
@@ -54,14 +53,17 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
       riskScore: parseFloat(riskScoreValue),
     };
 
-    // The backend returns feature importance as a dictionary, so we convert it to an array of objects.
-    const featureImportance: FeatureImportance[] = Object.entries(modelPrediction.feature_importance)
-      .map(([feature, importance]) => ({
-        feature,
-        importance: importance as number,
-      }))
-      .sort((a, b) => b.importance - a.importance) // Sort by importance descending
-      .slice(0, 10); // Get top 10
+    // Conditionally handle feature importance to prevent crashes
+    let featureImportance: FeatureImportance[] = [];
+    if (modelPrediction.feature_importance) {
+        featureImportance = Object.entries(modelPrediction.feature_importance)
+            .map(([feature, importance]) => ({
+                feature,
+                importance: importance as number,
+            }))
+            .sort((a, b) => b.importance - a.importance)
+            .slice(0, 10);
+    }
 
     return { result, featureImportance };
     // =================================================================
@@ -84,13 +86,6 @@ export async function batchPredictFraud(fileName: string): Promise<{ results?: P
   }
   
   try {
-    // In a real application with a Django backend, you would typically:
-    // 1. Get the file object from the CsvUpload component. (This may require changing the function signature).
-    // 2. Create a FormData object to send the file.
-    // 3. Send the file to your Django batch prediction endpoint using a 'multipart/form-data' request.
-    // 4. Process the response from your model.
-    // For now, we are just generating mock results as the endpoint is for single predictions.
-    
     const results: PredictionResult[] = Array.from({ length: 15 }, (_, i) => {
       const riskScore = Math.random();
       const prediction: 'Fraudulent' | 'Not Fraudulent' = riskScore > 0.8 ? 'Fraudulent' : 'Not Fraudulent';
@@ -111,7 +106,6 @@ export async function batchPredictFraud(fileName: string): Promise<{ results?: P
       };
     });
 
-    // Mock feature importance for batch
      const MOCK_FEATURE_IMPORTANCE: FeatureImportance[] = [
       { feature: 'V17', importance: 0.18 },
       { feature: 'V14', importance: 0.15 },
