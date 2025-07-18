@@ -18,7 +18,7 @@ type RiskScoreCardProps = {
 
 export function RiskScoreCard({ score, isLoading }: RiskScoreCardProps) {
   const percentageScore = score !== null ? score * 100 : 0;
-  const displayScore = score !== null ? percentageScore.toFixed(2) : '0';
+  const displayScore = score !== null ? percentageScore.toFixed(8) : '0';
   const sliderValue = Math.round(percentageScore);
 
 
