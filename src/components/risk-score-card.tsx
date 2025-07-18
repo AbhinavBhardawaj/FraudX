@@ -17,7 +17,10 @@ type RiskScoreCardProps = {
 };
 
 export function RiskScoreCard({ score, isLoading }: RiskScoreCardProps) {
-  const displayScore = score !== null ? Math.round(score * 100) : 0;
+  const percentageScore = score !== null ? score * 100 : 0;
+  const displayScore = score !== null ? percentageScore.toFixed(2) : '0';
+  const sliderValue = Math.round(percentageScore);
+
 
   return (
     <Card>
@@ -49,7 +52,7 @@ export function RiskScoreCard({ score, isLoading }: RiskScoreCardProps) {
           <div className="flex flex-col items-center space-y-4 pt-2">
             <div className="w-full">
               <Slider
-                value={[displayScore]}
+                value={[sliderValue]}
                 max={100}
                 step={1}
                 disabled
@@ -61,7 +64,10 @@ export function RiskScoreCard({ score, isLoading }: RiskScoreCardProps) {
               </div>
             </div>
             {score !== null ? (
-                <span className="text-4xl font-bold text-foreground">{displayScore}</span>
+                <div className="flex items-baseline">
+                  <span className="text-4xl font-bold text-foreground">{displayScore}</span>
+                  <span className="text-xl font-medium text-muted-foreground">%</span>
+                </div>
             ) : (
                 <span className="text-4xl font-bold text-muted-foreground">--</span>
             )}

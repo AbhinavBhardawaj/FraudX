@@ -49,7 +49,7 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
       id: `txn_${Math.random().toString(36).substr(2, 9)}`,
       ...data,
       prediction: modelPrediction.prediction === 1 ? 'Fraudulent' : 'Not Fraudulent',
-      riskScore: parseFloat(riskScoreValue.toFixed(2)),
+      riskScore: parseFloat(riskScoreValue),
     };
 
     // The backend returns feature importance as a dictionary, so we convert it to an array of objects.
