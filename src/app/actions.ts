@@ -38,7 +38,7 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
     }
 
     const modelPrediction = await response.json();
-    console.log("Received from backend:", modelPrediction); // Debugging log
+    console.log("Response from Django:", JSON.stringify(modelPrediction, null, 2));
 
     // Robustly find the risk score key
     const riskScoreKey = Object.keys(modelPrediction).find(key => key.toLowerCase().includes('score'));
