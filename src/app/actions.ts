@@ -39,11 +39,17 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
 
     const modelPrediction = await response.json();
 
+    // Check for both camelCase and snake_case to be robust.
+    const riskScoreValue = modelPrediction.riskScore ?? modelPrediction.risk_score;
+    if (riskScoreValue === undefined) {
+      throw new Error("The backend response did not include a 'riskScore' or 'risk_score' field.");
+    }
+
     const result: PredictionResult = {
       id: `txn_${Math.random().toString(36).substr(2, 9)}`,
       ...data,
       prediction: modelPrediction.prediction === 1 ? 'Fraudulent' : 'Not Fraudulent',
-      riskScore: parseFloat(modelPrediction.risk_score.toFixed(2)),
+      riskScore: parseFloat(riskScoreValue.toFixed(2)),
     };
 
     // The backend returns feature importance as a dictionary, so we convert it to an array of objects.
