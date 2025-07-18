@@ -40,10 +40,9 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
     const modelPrediction = await response.json();
     console.log("Received from backend:", modelPrediction); // Debugging log
 
-    // Check for both camelCase and snake_case to be robust.
-    const riskScoreValue = modelPrediction.riskScore ?? modelPrediction.risk_score;
+    const riskScoreValue = modelPrediction.risk_score;
     if (riskScoreValue === undefined) {
-      throw new Error("The backend response did not include a 'riskScore' or 'risk_score' field.");
+        throw new Error("The backend response did not include a 'risk_score' field.");
     }
 
     const result: PredictionResult = {
